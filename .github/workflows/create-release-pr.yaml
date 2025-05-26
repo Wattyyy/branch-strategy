@@ -36,6 +36,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git fetch --all
           git switch production
+          git log
           git checkout -b ${{ steps.vars.outputs.branch }}
           git cherry-pick ${{ steps.vars.outputs.sha }}
           git push --set-upstream origin ${{ steps.vars.outputs.branch }}
