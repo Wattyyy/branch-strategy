@@ -37,7 +37,7 @@ jobs:
           git switch production
           git checkout -b ${{ steps.vars.outputs.branch }}
           git cherry-pick ${{ steps.vars.outputs.sha }}
-          git push origin ${{ steps.vars.outputs.branch }}
+          git push origin ${{ steps.vars.outputs.branch }} --force
 
       - name: Create Pull Request
         env:
