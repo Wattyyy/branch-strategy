@@ -2,7 +2,7 @@ name: Auto Cherry-Pick to Production
 
 on:
   pull_request:
-    types: 
+    types:
       - closed
     branches:
       - main
@@ -12,7 +12,7 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     permissions:
-      contents: write      # needed to create branches
+      contents: write # needed to create branches
       pull-requests: write # needed to create PRs
 
     steps:
@@ -20,7 +20,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: production
-          fetch-depth: 0
 
       - name: Determine new branch name & commit
         id: vars
@@ -35,13 +34,7 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b ${{ steps.vars.outputs.branch }}
-
-      - name: Cherry-pick the PR merge commit
-        run: |
           git cherry-pick ${{ steps.vars.outputs.sha }}
-
-      - name: Push branch to origin
-        run: |
           git push --set-upstream origin ${{ steps.vars.outputs.branch }}
 
       - name: Open PR to production
@@ -50,7 +43,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: production
           branch: ${{ steps.vars.outputs.branch }}
-          title: '[Release] ${{ github.event.pull_request.title }}'
+          title: "[Release] ${{ github.event.pull_request.title }}"
           body: |
             Release #${{ github.event.pull_request.number }}
-
