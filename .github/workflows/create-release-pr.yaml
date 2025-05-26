@@ -39,7 +39,7 @@ jobs:
           git checkout -b ${{ steps.vars.outputs.branch }}
           git cherry-pick ${{ steps.vars.outputs.sha }}
           git log
-          git push origin ${{ steps.vars.outputs.branch }}
+          git push
 
       - name: Open PR to production
         uses: peter-evans/create-pull-request@v7
