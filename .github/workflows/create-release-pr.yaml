@@ -17,10 +17,9 @@ jobs:
 
     steps:
       - name: Set up Git
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          # checkout the main branch after the merge
-          ref: main
+          ref: production
           fetch-depth: 0
 
       - name: Determine new branch name & commit
