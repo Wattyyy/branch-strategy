@@ -20,6 +20,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: production
+          fetch-depth: 0 # Fetch all history for cherry-pick
 
       - name: Determine new branch name & commit
         id: vars
