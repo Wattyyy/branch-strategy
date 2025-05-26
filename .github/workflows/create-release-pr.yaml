@@ -21,6 +21,7 @@ jobs:
         with:
           ref: production
           fetch-depth: 0 # Fetch all history for cherry-pick
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Determine new branch name & commit
         id: vars
