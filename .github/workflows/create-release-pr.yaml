@@ -1,0 +1,56 @@
+name: Auto Cherry-Pick to Production
+
+on:
+  pull_request:
+    types: 
+      - closed
+    branches:
+      - main
+
+jobs:
+  cherry-pick:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write      # needed to create branches
+      pull-requests: write # needed to create PRs
+
+    steps:
+      - name: Set up Git
+        uses: actions/checkout@v4
+        with:
+          ref: production
+          fetch-depth: 0
+
+      - name: Determine new branch name & commit
+        id: vars
+        run: |
+          BRANCH=release-${{ github.event.pull_request.number }}
+          MERGE_SHA=$(curl -s https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }} | jq -r '.merge_commit_sha')
+          echo "branch=${BRANCH}" >> $GITHUB_OUTPUT
+          echo "sha=${MERGE_SHA}"  >> $GITHUB_OUTPUT
+
+      - name: Create and switch to new branch
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b ${{ steps.vars.outputs.branch }}
+
+      - name: Cherry-pick the PR merge commit
+        run: |
+          git cherry-pick ${{ steps.vars.outputs.sha }}
+
+      - name: Push branch to origin
+        run: |
+          git push --set-upstream origin ${{ steps.vars.outputs.branch }}
+
+      - name: Open PR to production
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: production
+          branch: ${{ steps.vars.outputs.branch }}
+          title: '[Release] ${{ github.event.pull_request.title }}'
+          body: |
+            Release #${{ github.event.pull_request.number }}
+
