@@ -20,6 +20,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Fetch all history for cherry-pick
+          ref: production
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Determine new branch name & commit
@@ -35,11 +36,10 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git fetch --all
-          git switch production
           git checkout -b ${{ steps.vars.outputs.branch }}
           git cherry-pick ${{ steps.vars.outputs.sha }}
           git log
-          git push
+          git push origin ${{ steps.vars.outputs.branch }}
 
       - name: Open PR to production
         uses: peter-evans/create-pull-request@v7
