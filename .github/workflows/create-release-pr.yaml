@@ -41,12 +41,12 @@ jobs:
           git log
           git push origin ${{ steps.vars.outputs.branch }}
 
-      - name: Open PR to production
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: production
-          branch: ${{ steps.vars.outputs.branch }}
-          title: "[Release] ${{ github.event.pull_request.title }}"
-          body: |
-            Release #${{ github.event.pull_request.number }}
+      # - name: Open PR to production
+      #   uses: peter-evans/create-pull-request@v7
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     base: production
+      #     branch: ${{ steps.vars.outputs.branch }}
+      #     title: "[Release] ${{ github.event.pull_request.title }}"
+      #     body: |
+      #       Release #${{ github.event.pull_request.number }}
