@@ -19,7 +19,6 @@ jobs:
       - name: Set up Git
         uses: actions/checkout@v4
         with:
-          ref: production
           fetch-depth: 0 # Fetch all history for cherry-pick
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -36,6 +35,7 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git fetch --all
+          git switch production
           git checkout -b ${{ steps.vars.outputs.branch }}
           git cherry-pick ${{ steps.vars.outputs.sha }}
           git push --set-upstream origin ${{ steps.vars.outputs.branch }}
